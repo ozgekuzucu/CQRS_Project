@@ -1,0 +1,297 @@
+﻿@model CQRS_Project.CQRS.Commands.LocationCommands.AddLocationFromApiCommand
+@{
+    ViewData["Title"] = "API'den Lokasyon Ekle";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <!-- Card Header -->
+                        <div class="card-header bg-dark text-white d-flex flex-row align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-cloud-download me-2"></i>
+                                <h6 class="m-0 font-weight-bold">Google Maps API ile Lokasyon Ekleme</h6>
+                            </div>
+                            <a href="/Location/Index" class="btn btn-outline-light btn-sm">
+                                <i class="mdi mdi-arrow-left me-1"></i>Geri Dön
+                            </a>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <!-- Error Message -->
+                            @if (TempData["ErrorMessage"] != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show border-0" role="alert">
+                                    <i class="mdi mdi-alert-circle me-2"></i>
+                                    <strong>Hata!</strong> @TempData["ErrorMessage"]
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            }
+
+                            <!-- Info Card -->
+                            <div class="alert alert-light border mb-4">
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <h6 class="alert-heading mb-2">Google Maps API Entegrasyonu</h6>
+                                        <p class="mb-2">Google Maps API kullanarak otomatik koordinat ve adres bilgisi ile lokasyon ekleyebilirsiniz.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Form -->
+                            <form asp-action="AddFromApi" method="post" id="apiForm" class="needs-validation" novalidate>
+
+                                <!-- Search Input -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium">
+                                        <i class="mdi mdi-map-search text-primary me-1"></i>Konum Arama
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0">
+                                            <i class="mdi mdi-pin"></i>
+                                        </span>
+                                        <input asp-for="SearchInput"
+                                               class="form-control border-start-0"
+                                               placeholder="Örn: Samandıra, İstanbul veya Sultanbeyli Metro İstasyonu"
+                                               required />
+                                        <div class="invalid-feedback">
+                                            Lütfen arama yapılacak konum bilgisini girin.
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small class="text-muted">
+                                            <i class="mdi mdi-lightbulb-outline me-1"></i>
+                                            <strong>İpucu:</strong> Şehir, ilçe, mahalle, sokak veya tam adres girebilirsiniz.
+                                            Ne kadar detaylı bilgi verirseniz sonuç o kadar doğru olur.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Form Buttons -->
+                                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                    <div class="d-flex" style="gap: 10px;">
+                                        <button type="button" class="btn btn-outline-info" onclick="clearForm()">
+                                            <i class="mdi mdi-refresh me-1"></i>Temizle
+                                        </button>
+                                        <button type="submit" class="btn btn-outline-primary" id="submitBtn">
+                                            API'den Getir ve Ekle
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('apiForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const searchInput = document.querySelector('input[name="SearchInput"]');
+        const sampleButtons = document.querySelectorAll('.sample-search');
+
+        // Sample search buttons
+        sampleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const searchTerm = this.dataset.search;
+                searchInput.value = searchTerm;
+                searchInput.focus();
+                validateInput();
+            });
+        });
+
+        // Form submission loading state
+        form.addEventListener('submit', function(e) {
+            if (form.checkValidity()) {
+                submitBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i>API\'den getiriliyor...';
+                submitBtn.disabled = true;
+            } else {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+
+        // Input validation
+        function validateInput() {
+            const value = searchInput.value.trim();
+            if (value.length >= 3) {
+                searchInput.classList.remove('is-invalid');
+                searchInput.classList.add('is-valid');
+            } else if (value.length > 0) {
+                searchInput.classList.remove('is-valid');
+                searchInput.classList.add('is-invalid');
+            } else {
+                searchInput.classList.remove('is-valid', 'is-invalid');
+            }
+        }
+
+        searchInput.addEventListener('input', validateInput);
+
+        // Enter key handling
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim().length < 3) {
+                e.preventDefault();
+                this.focus();
+            }
+        });
+
+        // Clear form function
+        window.clearForm = function() {
+            if (confirm('Formu temizlemek istediğinizden emin misiniz?')) {
+                searchInput.value = '';
+                searchInput.classList.remove('is-valid', 'is-invalid');
+                form.classList.remove('was-validated');
+                searchInput.focus();
+            }
+        };
+
+        // Auto dismiss alerts after 8 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert-danger');
+            alerts.forEach(function(alert) {
+                if (alert.classList.contains('show')) {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            });
+        }, 8000);
+
+        // Focus on search input
+        searchInput.focus();
+    });
+</script>
+
+<style>
+    /* Card Hover Effect */
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    /* Form Styling */
+    .form-label {
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 16px;
+        transition: all 0.2s ease;
+    }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+    .input-group-text {
+        border: 2px solid #e9ecef;
+        border-radius: 8px 0 0 8px;
+        background-color: #f8f9fa;
+    }
+
+    .form-control.border-start-0 {
+        border-left: none !important;
+        border-radius: 0 8px 8px 0;
+    }
+
+    /* Button Styling */
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+        }
+
+        .btn-primary:disabled {
+            background: #6c757d;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+    /* Sample Search Buttons */
+    .sample-search {
+        text-align: left;
+        font-size: 0.875rem;
+        padding: 8px 12px;
+    }
+
+        .sample-search:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+    /* Alert Styling */
+    .alert {
+        border-radius: 10px;
+    }
+
+    .alert-light {
+        background-color: #f8f9fa;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .alert-info {
+        background-color: #e7f3ff;
+        border-left: 4px solid #17a2b8;
+        color: #0c5460;
+    }
+
+    .alert-danger {
+        border-left: 4px solid #dc3545;
+    }
+
+    /* Form Text */
+    .form-text {
+        margin-top: 8px;
+    }
+
+    /* Icon Spacing */
+    .form-label i {
+        font-size: 1rem;
+    }
+
+    /* Validation Styling */
+    .invalid-feedback {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+
+    .form-control.is-valid {
+        border-color: #28a745;
+    }
+    }
+</style>

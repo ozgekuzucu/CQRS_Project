@@ -1,0 +1,28 @@
+﻿@model CQRS_Project.CQRS.Results.CategoryResults.GetCategoryByIdQueryResult
+@{
+    ViewData["Title"] = "UpdateCategory";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Kategori Güncelle</h4>
+                        <form method="post" asp-action="UpdateCategory" asp-controller="Category">
+                            <input type="hidden" asp-for="CategoryId" class="form-control">
+                            <div class="form-group">
+                                <label>Kategori Adı</label>
+                                <input type="text" asp-for="CategoryName" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                            <button class="btn btn-outline-light btn-sm">İptal</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

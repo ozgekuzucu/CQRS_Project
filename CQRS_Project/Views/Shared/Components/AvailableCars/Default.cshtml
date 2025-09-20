@@ -1,0 +1,135 @@
+﻿@model CQRS_Project.ViewComponents.AvailableCarsViewModel
+
+<div id="availableCarsSection" class="container-fluid py-5" style="display: none;">
+    <div class="container">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+            <h1 class="display-5 text-capitalize mb-3">Müsait <span class="text-primary">Araçlar</span></h1>
+            <p class="mb-0" id="searchCriteriaText">
+                Seçilen kriterlere uygun araçlar gösteriliyor.
+            </p>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <p class="mt-2">Müsait araçlar aranıyor...</p>
+        </div>
+
+        <!-- No Cars Available Message -->
+        <div id="noAvailableCars" class="alert alert-warning text-center" style="display: none;">
+            <i class="fas fa-info-circle me-2"></i>
+            Seçilen kriterlere uygun müsait araç bulunamadı. Lütfen farklı tarihler veya lokasyonlar deneyiniz.
+        </div>
+
+        <!-- Available Cars List -->
+        <div id="availableCarsList" class="row g-4">
+            <!-- Araçlar buraya dinamik olarak yüklenecek -->
+        </div>
+    </div>
+</div>
+
+<!-- Reservation Summary Modal -->
+<div class="modal fade" id="reservationSummaryModal" tabindex="-1" aria-labelledby="reservationSummaryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reservationSummaryModalLabel">
+                    <i class="fas fa-car text-primary me-2"></i>Rezervasyon Özeti
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="reservationSummary">
+                    <!-- Rezervasyon özeti buraya gelecek -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>İptal
+                </button>
+                <button type="button" class="btn btn-success" id="confirmBtn" onclick="confirmReservation()">
+                    <i class="fas fa-check me-1"></i>Rezervasyonu Onayla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .car-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+    .car-image {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .car-features {
+        font-size: 0.85rem;
+    }
+
+        .car-features i {
+            color: #007bff;
+            width: 20px;
+        }
+
+    .price-badge {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .total-price {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .select-car-btn {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+        .select-car-btn:hover {
+            background: linear-gradient(45deg, #218838, #17a2b8);
+            transform: translateY(-2px);
+        }
+
+    .category-badge {
+        background: linear-gradient(45deg, #6c757d, #495057);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .car-year {
+        background: #f8f9fa;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+</style>

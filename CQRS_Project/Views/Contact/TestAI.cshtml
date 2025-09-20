@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "AI Test";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="fas fa-robot"></i> AI Servisi Test</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Success == true)
+                    {
+                        <div class="alert alert-success">
+                            <h5>✅ Test Başarılı!</h5>
+                            <hr>
+                            <p><strong>Test Konusu:</strong> @ViewBag.TestSubject</p>
+                            <p><strong>Test Mesajı:</strong> @ViewBag.TestMessage</p>
+                            <hr>
+                            <h6>AI Yanıtı:</h6>
+                            <div class="bg-light p-3 border-left-primary" style="border-left: 4px solid #007bff;">
+                                <pre style="white-space: pre-wrap; font-family: inherit;">@ViewBag.TestResult</pre>
+                            </div>
+                        </div>
+                    }
+                    else if (ViewBag.Success == false)
+                    {
+                        <div class="alert alert-danger">
+                            <h5>❌ Test Başarısız!</h5>
+                            <p><strong>Hata:</strong> @ViewBag.Error</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <p>AI servisinizi test etmek için aşağıdaki butona tıklayın.</p>
+                        </div>
+                    }
+
+                    <div class="text-center">
+                        <a href="@Url.Action("TestAI", "Contact")" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play"></i> AI Test Başlat
+                        </a>
+                    </div>
+
+                    <hr>
+
+                    <!-- Manuel Test Formu -->
+                    <h5>Manuel Test</h5>
+                    <form action="@Url.Action("TestAIManual", "Contact")" method="post">
+                        <div class="form-group mb-3">
+                            <label for="subject">Konu:</label>
+                            <input type="text" id="subject" name="subject" class="form-control"
+                                   value="Araç Kiralama Hakkında" placeholder="Test konusu...">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="message">Mesaj:</label>
+                            <textarea id="message" name="message" class="form-control" rows="3"
+                                      placeholder="Test mesajınızı yazın...">Merhaba, araç kiralama hizmetiniz hakkında bilgi almak istiyorum. Hangi araçlarınız mevcut?</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Manuel Test
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-info-circle"></i> Hugging Face API Durumu</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>API Key:</strong> @(ViewBag.ApiKeyStatus ?? "Kontrol edilemiyor")</p>
+                    <p><strong>Model:</strong> microsoft/DialoGPT-medium</p>
+                    <p><strong>Endpoint:</strong> https://api-inference.huggingface.co</p>
+
+                    <small class="text-muted">
+                        <strong>Not:</strong> Hugging Face modellerinin ilk yüklemesi 15-30 saniye sürebilir.
+                        Eğer "Model loading" hatası alırsanız, birkaç dakika bekleyip tekrar deneyin.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .border-left-primary {
+        border-left: 4px solid #007bff !important;
+    }
+</style>

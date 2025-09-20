@@ -1,0 +1,52 @@
+﻿@model CQRS_Project.CQRS.Commands.SliderCommands.CreateSliderCommand
+
+@{
+    ViewData["Title"] = "CreateSlider";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Yeni Slider Ekle</h4>
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                <input type="text" asp-for="Title" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Açıklama</label>
+                                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Resim</label>
+                                <input type="text" asp-for="ImageUrl" class="form-control" />
+                            </div>
+
+                            <br />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                            <a href="/Slider/Index" class="btn btn-outline-light btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>

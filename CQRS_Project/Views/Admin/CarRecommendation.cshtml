@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "CarRecommendation";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0">AI Araç Öneri Asistanı</h1>
+            </div>
+
+            <div class="row">
+                <!-- Input -->
+                <div class="col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Müşteri Sorusu</h6>
+                        </div>
+                        <div class="card-body">
+                            <form id="recommendationForm">
+                                <div class="form-group">
+                                    <textarea class="form-control"
+                                              id="customerQuery"
+                                              name="query"
+                                              rows="6"
+                                              placeholder="Örn: 'Aile için ekonomik bir araç arıyorum, şehir içinde kullanacağım'"
+                                              required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-user btn-block" id="getRecommendationBtn">
+                                        Araç Önerisi Al
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output -->
+                <div class="col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-success">AI Önerileri
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="recommendationOutput">
+                                <div class="text-center text-muted py-5">
+                                    <h5>AI Asistanı Hazır!</h5>
+                                    <p>Bir müşteri sorusu yazın ve öneri alın.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('recommendationForm');
+                if (form) {
+                    form.addEventListener('submit', handleFormSubmit);
+                }
+            });
+
+            async function handleFormSubmit(e) {
+                e.preventDefault();
+                const query = document.getElementById('customerQuery').value.trim();
+                if (!query) return;
+
+                await getAIRecommendation(query);
+            }
+
+            async function getAIRecommendation(query) {
+                const btn = document.getElementById('getRecommendationBtn');
+                const output = document.getElementById('recommendationOutput');
+                const copyBtn = document.getElementById('copyRecommendationBtn');
+
+                // Null check ekleyin
+                if (!btn || !output) {
+                    console.error('Required elements not found');
+                    return;
+                }
+
+                btn.innerHTML = 'AI Düşünüyor...';
+                btn.disabled = true;
+
+                // CopyBtn varsa gizle
+                if (copyBtn) {
+                    copyBtn.style.display = 'none';
+                }
+
+                output.innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary mb-3" role="status"></div>
+                        <h6 class="text-primary">AI analiz yapıyor...</h6>
+                    </div>
+                `;
+
+                try {
+                    const response = await fetch('/Admin/GetCarRecommendation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ Query: query })
+                    });
+
+                    const result = await response.json();
+                    console.log('API Response:', result); // Debug için
+
+                    if (result.success) {
+                        output.innerHTML = result.recommendation;
+                        if (copyBtn) {
+                            copyBtn.style.display = 'inline-block';
+                        }
+                    } else {
+                        output.innerHTML = `<div class="alert alert-danger"><strong>Hata:</strong> ${result.message}</div>`;
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    output.innerHTML = `<div class="alert alert-danger">AI servisine ulaşılamıyor.</div>`;
+                } finally {
+                    btn.innerHTML = 'AI Önerisi Al';
+                    btn.disabled = false;
+                }
+            }
+
+            function copyRecommendation() {
+                const output = document.getElementById('recommendationOutput');
+                if (output) {
+                    const text = output.innerText || output.textContent;
+                    navigator.clipboard.writeText(text).then(function() {
+                        console.log('Text copied');
+                    }).catch(function(err) {
+                        console.error('Copy failed:', err);
+                    });
+                }
+            }
+        </script>
+        <style>
+            #recommendationOutput {
+                min-height: 100px;
+            }
+
+            .ai-response-plain {
+                color: #495057;
+                line-height: 1.6;
+                font-size: 14px;
+                max-width: 100%;
+                word-wrap: break-word;
+            }
+
+                .ai-response-plain h6 {
+                    color: #007bff !important;
+                    font-weight: 600;
+                }
+
+            .card-body {
+                min-height: 400px !important;
+                height: auto !important;
+            }
+        </style>
+    </div>
+</div>
+<style>
+    .ai-response-plain {
+        color: #495057;
+        line-height: 1.6;
+        font-size: 14px;
+    }
+
+        .ai-response-plain h6 {
+            color: #007bff !important;
+            font-weight: 600;
+        }
+</style>

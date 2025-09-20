@@ -1,0 +1,170 @@
+﻿@model List<CQRS_Project.CQRS.Results.ReservationResults.GetReservationQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Rezervasyon Listesi</h4>
+                            <a href="/Reservation/CreateReservation" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="20%">Müşteri</th>
+                                        <th width="20%">Tarih Bilgileri</th>
+                                        <th width="20%">Lokasyon</th>
+                                        <th width="15%">Durum</th>
+                                        <th width="20%" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td><span class="badge bg-secondary"> @count</span></td>
+                                            <td>
+                                                <div class="reservation-info">
+                                                   @item.CustomerName
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="date-info">
+                                                    <div class="small">
+                                                        <i class="mdi mdi-calendar-start text-success me-1"></i>
+                                                        <strong>Başlangıç:</strong> @item.StartDate.ToString("dd.MM.yyyy")
+                                                    </div>
+                                                    <div class="small">
+                                                        <i class="mdi mdi-calendar-end text-danger me-1"></i>
+                                                        <strong>Bitiş:</strong> @item.EndDate.ToString("dd.MM.yyyy")
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        @((item.EndDate - item.StartDate).Days) gün
+                                                    </small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="location-info">
+                                                    <div class="small">
+                                                        <i class="mdi mdi-map-marker text-success me-1"></i>
+                                                        <strong>Alış:</strong> @item.PickUpLocationName
+                                                    </div>
+                                                    <div class="small">
+                                                        <i class="mdi mdi-map-marker-check text-info me-1"></i>
+                                                        <strong>Teslim:</strong> @item.DropOffLocationName
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @switch (item.Status?.ToLower())
+                                                {
+                                                    case "pending":
+                                                        <span class="badge bg-warning">
+                                                            <i class="mdi mdi-clock-outline me-1"></i>Bekliyor
+                                                        </span>
+                                                        break;
+                                                    case "confirmed":
+                                                        <span class="badge bg-success">
+                                                            <i class="mdi mdi-check-circle me-1"></i>Onaylandı
+                                                        </span>
+                                                        break;
+                                                    case "cancelled":
+                                                        <span class="badge bg-danger">
+                                                            <i class="mdi mdi-close-circle me-1"></i>İptal Edildi
+                                                        </span>
+                                                        break;
+                                                    case "completed":
+                                                        <span class="badge bg-info">
+                                                            <i class="mdi mdi-check-all me-1"></i>Tamamlandı
+                                                        </span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-secondary">
+                                                            <i class="mdi mdi-help-circle me-1"></i>@item.Status
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="/Reservation/UpdateReservation/@item.ReservationId"
+                                                   class="btn btn-outline-success btn-sm me-2"
+                                                   title="Düzenle">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="/Reservation/DeleteReservation/@item.ReservationId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Sil"
+                                                   onclick="return confirm('Bu rezervasyonu silmek istediğinizden emin misiniz?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    .reservation-info,
+    .date-info,
+    .location-info {
+        line-height: 1.4;
+    }
+
+    .small {
+        font-size: 0.85rem;
+        margin-bottom: 3px;
+    }
+
+        .small i {
+            font-size: 0.8rem;
+            width: 14px;
+        }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+
+        .badge i {
+            font-size: 0.7rem;
+        }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    }
+</style>

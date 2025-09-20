@@ -1,0 +1,691 @@
+﻿<!-- Views/Shared/Components/Reservation/Default.cshtml -->
+<div class="bg-secondary rounded p-5">
+    <h4 class="text-white mb-4">REZERVASYON YAP</h4>
+    <form id="reservationForm">
+        <div class="row g-3">
+            <!-- Araç Kategorisi -->
+            <div class="col-12">
+                <select class="form-select" id="categorySelect" name="CategoryId" aria-label="Kategori seçin">
+                    <option value="">Tüm Araç Tipleri</option>
+                    @if (ViewBag.Categories != null)
+                    {
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.CategoryId">@category.CategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Alış Lokasyonu -->
+            <div class="col-12">
+                <div class="input-group">
+                    <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                        <span class="fas fa-map-marker-alt"></span>
+                        <span class="ms-1">Alış Lokasyonu</span>
+                    </div>
+                    <select class="form-select" id="pickUpLocation" name="PickUpLocationId" required>
+                        <option value="">Alış yerini seçiniz</option>
+                        @if (ViewBag.Locations != null)
+                        {
+                            @foreach (var location in ViewBag.Locations)
+                            {
+                                <option value="@location.LocationId">@location.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Bırakış Lokasyonu -->
+            <div class="col-12">
+                <a href="#" class="text-start text-white d-block mb-2" onclick="toggleSameLocation(event)">
+                    <i class="fas fa-exchange-alt me-1"></i>Farklı bir bırakış noktası mı istiyorsunuz?
+                </a>
+                <div class="input-group">
+                    <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                        <span class="fas fa-map-marker-alt"></span>
+                        <span class="ms-1">Bırakış Lokasyonu</span>
+                    </div>
+                    <select class="form-select" id="dropOffLocation" name="DropOffLocationId" required>
+                        <option value="">Bırakış yerini seçiniz</option>
+                        @if (ViewBag.Locations != null)
+                        {
+                            @foreach (var location in ViewBag.Locations)
+                            {
+                                <option value="@location.LocationId">@location.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- Alış Tarihi -->
+            <div class="col-12">
+                <div class="input-group">
+                    <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                        <span class="fas fa-calendar-alt"></span>
+                        <span class="ms-1">Alış Tarihi</span>
+                    </div>
+                    <input class="form-control" type="date" id="startDate" name="StartDate" required>
+                    <select class="form-select ms-3" id="startTime" name="StartTime" style="max-width: 100px;">
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00" selected>12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Bırakış Tarihi -->
+            <div class="col-12">
+                <div class="input-group">
+                    <div class="d-flex align-items-center bg-light text-body rounded-start p-2">
+                        <span class="fas fa-calendar-alt"></span>
+                        <span class="ms-1">Bırakış Tarihi</span>
+                    </div>
+                    <input class="form-control" type="date" id="endDate" name="EndDate" required>
+                    <select class="form-select ms-3" id="endTime" name="EndTime" style="max-width: 100px;">
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00" selected>12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Rezervasyon Butonu -->
+            <div class="col-12">
+                <button type="button" class="btn btn-light w-100 py-2" onclick="searchAvailableCars()">
+                    <i class="fas fa-search me-2"></i>Müsait Araçları Ara
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<!-- Bootstrap, diğer kütüphaneler -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+        // Rezervasyon formu ve müsait araçlar için JavaScript
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeReservationForm();
+    });
+
+    var selectedReservationData = selectedReservationData || {};
+
+    function initializeReservationForm() {
+        // Minimum tarih bugün olsun
+        const today = new Date().toISOString().split('T')[0];
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+
+        if (startDateInput && endDateInput) {
+            startDateInput.min = today;
+            endDateInput.min = today;
+
+            // Alış tarihi değiştiğinde bırakış tarihini güncelle
+            startDateInput.addEventListener('change', function() {
+                const startDate = new Date(this.value);
+                const nextDay = new Date(startDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                endDateInput.min = nextDay.toISOString().split('T')[0];
+
+                if (endDateInput.value && new Date(endDateInput.value) <= startDate) {
+                    endDateInput.value = nextDay.toISOString().split('T')[0];
+                }
+            });
+        }
+
+        // Alış lokasyonu değiştiğinde bırakışı otomatik seç
+        const pickUpLocationSelect = document.getElementById('pickUpLocation');
+        const dropOffLocationSelect = document.getElementById('dropOffLocation');
+
+        if (pickUpLocationSelect && dropOffLocationSelect) {
+            pickUpLocationSelect.addEventListener('change', function() {
+                if (!dropOffLocationSelect.value) {
+                    dropOffLocationSelect.value = this.value;
+                }
+            });
+        }
+    }
+
+    function toggleSameLocation(event) {
+        event.preventDefault();
+        const pickUpLocationSelect = document.getElementById('pickUpLocation');
+        const dropOffLocationSelect = document.getElementById('dropOffLocation');
+
+        if (!pickUpLocationSelect || !dropOffLocationSelect) return;
+
+        const pickUp = pickUpLocationSelect.value;
+        const dropOff = dropOffLocationSelect.value;
+
+        if (dropOff === pickUp && pickUp !== '') {
+            dropOffLocationSelect.value = '';
+        } else if (pickUp !== '') {
+            dropOffLocationSelect.value = pickUp;
+        }
+    }
+
+    async function searchAvailableCars() {
+        // Form verilerini topla
+        const formData = {
+            PickUpLocationId: parseInt(document.getElementById('pickUpLocation').value),
+            DropOffLocationId: parseInt(document.getElementById('dropOffLocation').value),
+            StartDate: document.getElementById('startDate').value,
+            EndDate: document.getElementById('endDate').value,
+            StartTime: document.getElementById('startTime').value,
+            EndTime: document.getElementById('endTime').value,
+            CategoryId: document.getElementById('categorySelect').value ?
+                       parseInt(document.getElementById('categorySelect').value) : null
+        };
+
+        // Validasyon
+        if (!formData.PickUpLocationId || !formData.DropOffLocationId ||
+            !formData.StartDate || !formData.EndDate) {
+            alert('Lütfen tüm alanları doldurunuz.');
+            return;
+        }
+
+        // Tarih kontrolü
+        if (new Date(formData.StartDate) >= new Date(formData.EndDate)) {
+            alert('Bırakış tarihi alış tarihinden sonra olmalıdır.');
+            return;
+        }
+
+        // Müsait araçlar bölümünü göster
+        const availableCarsSection = document.getElementById('availableCarsSection');
+        if (availableCarsSection) {
+            availableCarsSection.style.display = 'block';
+            availableCarsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Loading göster
+        showLoading();
+        hideAvailableCars();
+        hideNoResultsMessage();
+
+        try {
+            const response = await fetch('/Reservation/GetAvailableCars', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            hideLoading();
+
+            if (result.success && result.data && result.data.length > 0) {
+                displayAvailableCars(result.data, formData);
+                updateSearchCriteriaText(formData);
+            } else {
+                showNoResultsMessage();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            hideLoading();
+            alert('Bir hata oluştu. Lütfen tekrar deneyiniz.');
+        }
+    }
+
+    function displayAvailableCars(cars, searchData) {
+        const container = document.getElementById('availableCarsList');
+        if (!container) return;
+
+        const startDate = new Date(searchData.StartDate);
+        const endDate = new Date(searchData.EndDate);
+        const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+        container.innerHTML = '';
+
+        cars.forEach(car => {
+            const carId = car.carId ?? car.CarId ?? 0;
+            const brand = car.brand ?? car.Brand ?? car.brandName ?? '';
+            const model = car.model ?? car.Model ?? car.modelName ?? '';
+            const category = car.category ?? car.Category ?? car.categoryName ?? '';
+            const pricePerDay = car.dailyPrice ?? car.pricePerDay ?? car.PricePerDay ?? 0;
+            const imageUrl = car.imageUrl ?? car.ImageUrl ?? car.photoUrl ?? '/images/no-car.png';
+            const year = car.year ?? car.Year ?? car.modelYear ?? '';
+            const fuel = car.fuel ?? car.Fuel ?? car.fuelType ?? '';
+            const transmission = car.transmission ?? car.Transmission ?? car.gearType ?? '';
+            const seatCount = car.seatCount ?? car.SeatCount ?? 4;
+            const plateNumber = car.plateNumber ?? car.PlateNumber ?? '';
+
+            const totalPrice = (pricePerDay * totalDays);
+
+            const carCard = createCarCard({
+                carId,
+                brand,
+                model,
+                category,
+                pricePerDay,
+                totalPrice,
+                totalDays,
+                imageUrl,
+                year,
+                fuel,
+                transmission,
+                seatCount,
+                plateNumber,
+                searchData
+            });
+
+            container.innerHTML += carCard;
+        });
+    }
+
+    function createCarCard(carData) {
+        const { carId, brand, model, category, pricePerDay, totalPrice, totalDays,
+                imageUrl, year, fuel, transmission, seatCount, searchData } = carData;
+
+        return `
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="card car-card h-100">
+                    <img src="${imageUrl}" class="card-img-top car-image" alt="${brand} ${model}">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">${brand} ${model}</h5>
+                            ${year ? `<span class="car-year">${year}</span>` : ''}
+                        </div>
+
+                        ${category ? `<span class="category-badge mb-2">${category}</span>` : ''}
+
+                        <div class="car-features mb-3">
+                            <div class="row text-center">
+                                <div class="col-4 mb-2">
+                                    <i class="fas fa-users"></i>
+                                    <small class="d-block">${seatCount} Kişi</small>
+                                </div>
+                                <div class="col-4 mb-2">
+                                    <i class="fas fa-cogs"></i>
+                                    <small class="d-block">${transmission || 'N/A'}</small>
+                                </div>
+                                <div class="col-4 mb-2">
+                                    <i class="fas fa-gas-pump"></i>
+                                    <small class="d-block">${fuel || 'N/A'}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto">
+                            <div class="text-center mb-3">
+                                <span class="price-badge">₺${pricePerDay}/gün</span>
+                            </div>
+                            <div class="text-center mb-3">
+                                <span class="total-price">Toplam: ₺${totalPrice.toFixed(2)}</span>
+                            </div>
+                            <button class="btn select-car-btn w-100"
+                                    onclick="selectCarForReservation(${carId}, '${brand}', '${model}', ${pricePerDay}, ${totalPrice}, ${totalDays}, ${searchData.PickUpLocationId}, ${searchData.DropOffLocationId}, '${searchData.StartDate}', '${searchData.EndDate}', '${searchData.StartTime}', '${searchData.EndTime}')">
+                                <i class="fas fa-check me-2"></i>Bu Aracı Seç
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function selectCarForReservation(carId, brand, model, pricePerDay, totalPrice, totalDays,
+        pickUpLocationId, dropOffLocationId, startDate, endDate, startTime, endTime) {
+
+        selectedReservationData = {
+            CarId: carId,
+            PickUpLocationId: pickUpLocationId,
+            DropOffLocationId: dropOffLocationId,
+            StartDate: startDate,
+            EndDate: endDate,
+            StartTime: startTime,
+            EndTime: endTime
+        };
+
+        // Lokasyon metinlerini al
+        const pickUpText = document.getElementById('pickUpLocation')
+            .options[document.getElementById('pickUpLocation').selectedIndex].text;
+        const dropOffText = document.getElementById('dropOffLocation')
+            .options[document.getElementById('dropOffLocation').selectedIndex].text;
+
+        // Modal içeriğini oluştur
+        const summaryHTML = createReservationSummaryHTML({
+            brand, model, pricePerDay, totalPrice, totalDays,
+            startDate, endDate, startTime, endTime,
+            pickUpText, dropOffText
+        });
+
+        document.getElementById('reservationSummary').innerHTML = summaryHTML;
+
+        // Modal'ı göster
+        const modal = new bootstrap.Modal(document.getElementById('reservationSummaryModal'));
+        modal.show();
+    }
+
+    function createReservationSummaryHTML(data) {
+        const { brand, model, pricePerDay, totalPrice, totalDays,
+                startDate, endDate, startTime, endTime, pickUpText, dropOffText } = data;
+
+        return `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-car text-primary me-2"></i>Seçilen Araç</h6>
+                    <p class="mb-1"><strong>${brand} ${model}</strong></p>
+                    <p class="text-muted">₺${pricePerDay}/gün</p>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-calendar text-info me-2"></i>Tarih Bilgileri</h6>
+                    <p class="mb-1">Alış: ${formatDate(startDate)} ${startTime}</p>
+                    <p class="mb-1">Bırakış: ${formatDate(endDate)} ${endTime}</p>
+                    <p class="text-muted">${totalDays} gün</p>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-map-marker-alt text-warning me-2"></i>Lokasyon Bilgileri</h6>
+                    <p class="mb-1">Alış: ${pickUpText}</p>
+                    <p class="mb-1">Bırakış: ${dropOffText}</p>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-money-bill-wave text-success me-2"></i>Fiyat Detayı</h6>
+                    <p class="mb-1">Günlük Ücret: ₺${pricePerDay}</p>
+                    <p class="mb-1">Gün Sayısı: ${totalDays}</p>
+                    <h5 class="text-success">Toplam: ₺${totalPrice.toFixed(2)}</h5>
+                </div>
+            </div>
+        `;
+    }
+
+    async function confirmReservation() {
+        const confirmBtn = document.getElementById('confirmBtn');
+        const originalText = confirmBtn.innerHTML;
+
+        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>İşleniyor...';
+        confirmBtn.disabled = true;
+
+        try {
+            const response = await fetch('/Reservation/CreateReservationFromFrontend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(selectedReservationData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Rezervasyonunuz başarıyla oluşturuldu!');
+                // Modal'ı kapat
+                const modal = bootstrap.Modal.getInstance(document.getElementById('reservationSummaryModal'));
+                modal.hide();
+
+                // Formu temizle
+                document.getElementById('reservationForm').reset();
+                hideAvailableCarsSection();
+            } else {
+                alert(result.message || 'Rezervasyon oluşturulurken bir hata oluştu.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Bir hata oluştu. Lütfen tekrar deneyiniz.');
+        } finally {
+            confirmBtn.innerHTML = originalText;
+            confirmBtn.disabled = false;
+        }
+    }
+
+    // Yardımcı fonksiyonlar
+    function showLoading() {
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) spinner.style.display = 'block';
+    }
+
+    function hideLoading() {
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) spinner.style.display = 'none';
+    }
+
+    function showNoResultsMessage() {
+        const message = document.getElementById('noAvailableCars');
+        if (message) message.style.display = 'block';
+    }
+
+    function hideNoResultsMessage() {
+        const message = document.getElementById('noAvailableCars');
+        if (message) message.style.display = 'none';
+    }
+
+    function hideAvailableCars() {
+        const container = document.getElementById('availableCarsList');
+        if (container) container.innerHTML = '';
+    }
+
+    function hideAvailableCarsSection() {
+        const section = document.getElementById('availableCarsSection');
+        if (section) section.style.display = 'none';
+    }
+
+    function updateSearchCriteriaText(formData) {
+        const textElement = document.getElementById('searchCriteriaText');
+        if (textElement) {
+            const startDate = formatDate(formData.StartDate);
+            const endDate = formatDate(formData.EndDate);
+            textElement.textContent = `${startDate} - ${endDate} tarihleri arasında müsait araçlar gösteriliyor.`;
+        }
+    }
+
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('tr-TR');
+    }
+        // Reservation component JavaScript'inin sonuna ekle
+
+    // Lokasyon değiştiğinde yakıt hesaplama
+    function handleLocationChange() {
+        const pickUpLocationId = document.getElementById('pickUpLocation').value;
+        const dropOffLocationId = document.getElementById('dropOffLocation').value;
+
+        if (pickUpLocationId && dropOffLocationId) {
+            calculateFuelCost(pickUpLocationId, dropOffLocationId);
+        } else {
+            hideFuelCalculation();
+        }
+    }
+
+    // Yakıt maliyeti hesaplama
+    async function calculateFuelCost(pickUpLocationId, dropOffLocationId) {
+        try {
+            showFuelCalculationLoading();
+
+            const response = await fetch('/Reservation/CalculateFuelCost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    PickUpLocationId: parseInt(pickUpLocationId),
+                    DropOffLocationId: parseInt(dropOffLocationId)
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                displayFuelCalculation(result.data);
+            } else {
+                hideFuelCalculation();
+                console.error('Fuel calculation failed:', result.message);
+            }
+        } catch (error) {
+            console.error('Error calculating fuel cost:', error);
+            hideFuelCalculation();
+        }
+    }
+
+    // Yakıt hesaplaması gösterimi
+    function displayFuelCalculation(data) {
+        const container = getFuelCalculationContainer();
+
+        container.innerHTML = `
+            <div class="fuel-calculation-card mt-3 p-3 bg-light rounded">
+                <h6 class="text-primary mb-3">
+                    <i class="fas fa-route me-2"></i>Tahmini Mesafe ve Yakıt Maliyeti
+                </h6>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="fuel-info-item mb-2">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                            <strong>Mesafe:</strong> ${data.distanceKm} km
+                        </div>
+                        <div class="fuel-info-item mb-2">
+                            <i class="fas fa-gas-pump text-warning me-2"></i>
+                            <strong>Tahmini Yakıt:</strong> ${data.estimatedFuelLiters} litre
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="fuel-cost-display text-center">
+                            <div class="fuel-cost-label text-muted">Tahmini Yakıt Maliyeti</div>
+                            <div class="fuel-cost-amount h4 text-success">
+                                ₺${data.estimatedFuelCost}
+                            </div>
+                            <small class="text-muted">
+                                (7 lt/100km olarak alınmıştır.)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="route-info mt-2">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        ${data.pickUpLocationName} → ${data.dropOffLocationName}
+                    </small>
+                </div>
+            </div>
+        `;
+
+        container.style.display = 'block';
+    }
+
+    // Fuel calculation container'ı bul veya oluştur
+    function getFuelCalculationContainer() {
+        let container = document.getElementById('fuelCalculationContainer');
+
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'fuelCalculationContainer';
+            container.style.display = 'none';
+
+            // Form'un altına ekle
+            const form = document.getElementById('reservationForm');
+            form.parentNode.insertBefore(container, form.nextSibling);
+        }
+
+        return container;
+    }
+
+    // Loading göster
+    function showFuelCalculationLoading() {
+        const container = getFuelCalculationContainer();
+
+        container.innerHTML = `
+            <div class="fuel-calculation-card mt-3 p-3 bg-light rounded">
+                <div class="text-center">
+                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <span class="text-muted">Mesafe hesaplanıyor...</span>
+                </div>
+            </div>
+        `;
+
+        container.style.display = 'block';
+    }
+
+    // Fuel calculation'ı gizle
+    function hideFuelCalculation() {
+        const container = document.getElementById('fuelCalculationContainer');
+        if (container) {
+            container.style.display = 'none';
+        }
+    }
+
+    // Event listener'ları güncelle
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeReservationForm();
+
+        // Lokasyon değişikliklerini dinle
+        const pickUpLocation = document.getElementById('pickUpLocation');
+        const dropOffLocation = document.getElementById('dropOffLocation');
+
+        if (pickUpLocation) {
+            pickUpLocation.addEventListener('change', handleLocationChange);
+        }
+
+        if (dropOffLocation) {
+            dropOffLocation.addEventListener('change', handleLocationChange);
+        }
+    });
+
+    // CSS styles ekle
+       const fuelCalculationStyles = `
+    <style>
+    .fuel-calculation-card {
+        border: 1px solid #e3e6f0;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+
+    /* yazı rengini koyulaştır */
+    .fuel-info-item {
+        font-size: 0.9rem;
+        color: #212529; /* Bootstrap text-dark */
+    }
+
+    .fuel-cost-display {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 15px;
+        border-radius: 8px;
+        border: 2px dashed #28a745;
+        color: #212529; /* burada da yazı kontrastlı olsun */
+    }
+
+    .fuel-cost-label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #495057; /* muted yerine secondary */
+    }
+
+    .fuel-cost-amount {
+        font-weight: bold;
+        margin: 5px 0;
+    }
+
+    .route-info {
+        padding-top: 10px;
+        border-top: 1px solid #dee2e6;
+        color: #495057; /* görünür secondary ton */
+    }
+    </style>
+    `;
+
+    // Styles'ı head'e ekle
+    document.head.insertAdjacentHTML('beforeend', fuelCalculationStyles);
+
+</script>

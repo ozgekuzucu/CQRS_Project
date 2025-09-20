@@ -1,0 +1,69 @@
+﻿@using CQRS_Project.CQRS.Commands.ContactCommands
+@model CreateContactCommand
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="container-fluid contact py-5">
+    <div class="container py-5">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+            <h1 class="display-5 text-capitalize text-primary mb-3">İletişime Geçin</h1>
+            <p class="mb-0">Sorularınız için bizimle iletişime geçebilirsiniz.</p>
+        </div>
+        <div class="row g-5 justify-content-center">
+            <div class="col-xl-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="bg-secondary p-5 rounded">
+                    <h4 class="text-primary mb-4">Mesajınızı Gönderin</h4>
+                    <form asp-controller="Contact" asp-action="SubmitContact" method="post" class="contact-form">
+                        <div class="row g-4">
+                            <div class="col-lg-12 col-xl-6">
+                                <div class="form-floating">
+                                    <input asp-for="Name" type="text" class="form-control" placeholder="Ad Soyad" required />
+                                    <label asp-for="Name">Ad Soyad</label>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-xl-6">
+                                <div class="form-floating">
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="E-posta" required />
+                                    <label asp-for="Email">E-posta</label>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-xl-6">
+                                <div class="form-floating">
+                                    <input asp-for="Phone" type="tel" class="form-control" placeholder="Telefon" />
+                                    <label asp-for="Phone">Telefon</label>
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-xl-6">
+                                <div class="form-floating">
+                                    <input asp-for="Subject" type="text" class="form-control" placeholder="Konu" required />
+                                    <label asp-for="Subject">Konu</label>
+                                    <span asp-validation-for="Subject" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea asp-for="Message" class="form-control" placeholder="Mesajınız" style="height: 160px" required></textarea>
+                                    <label asp-for="Message">Mesaj</label>
+                                    <span asp-validation-for="Message" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-light w-100 py-3">Mesaj Gönder</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

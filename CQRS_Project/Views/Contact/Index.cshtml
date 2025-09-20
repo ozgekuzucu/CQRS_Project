@@ -1,0 +1,72 @@
+﻿@model List<CQRS_Project.CQRS.Results.ContactResults.GetContactQueryResult>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">İletişim Listesi</h4>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>İsim</th>
+                                    <th>Email</th>
+                                    <th>Telefon</th>
+                                    <th>Konu</th>
+                                    <th>Mesaj</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                    <th>Cevaplandı mı</th>
+                                    <th>Cevap Mesajı</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.ContactId</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.Phone</td>
+                                        <td>@item.Subject</td>
+                                        <td>@item.Message</td>
+                                        <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                        <td>@(item.IsReplied ? "Evet" : "Hayır")</td>
+                                        <td>@item.ReplyMessage</td>
+                                        <td>
+                                            <a href="/Contact/UpdateContact/@item.ContactId" class="btn btn-success btn-rounded btn-sm">Güncelle</a>
+                                            <a href="/Contact/DeleteContact/@item.ContactId" class="btn btn-danger btn-rounded btn-sm">Sil</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <br />
+                        <a href="/Contact/CreateContact" class="btn btn-info btn-rounded btn-sm">Yeni İletişim Ekle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>
+

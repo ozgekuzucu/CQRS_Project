@@ -1,0 +1,63 @@
+﻿@model CQRS_Project.CQRS.Commands.ReservationCommands.CreateReservationCommand
+@{
+    ViewData["Title"] = "CreateReservation";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Rezervasyon Oluştur</h4>
+                        <form method="post">
+                            <div class="form-group">
+                                <label>Müşteri</label>
+                                <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Araç</label>
+                                <select asp-for="CarId" asp-items="ViewBag.Cars" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Başlangıç Tarihi</label>
+                                <input type="date" asp-for="StartDate" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Bitiş Tarihi</label>
+                                <input type="date" asp-for="EndDate" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Alış Lokasyonu</label>
+                                <select asp-for="PickUpLocationId" asp-items="ViewBag.Locations" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Bırakış Lokasyonu</label>
+                                <select asp-for="DropOffLocationId" asp-items="ViewBag.Locations" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Durum</label>
+                                <select asp-for="Status" class="form-control">
+                                    <option value="Beklemede">Beklemede</option>
+                                    <option value="Onaylandı">Onaylandı</option>
+                                    <option value="İptal Edildi">İptal Edildi</option>
+                                </select>
+                            </div>
+
+                            <br />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                            <a href="/Reservation/Index" class="btn btn-outline-light btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

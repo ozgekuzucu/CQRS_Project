@@ -1,0 +1,401 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+   
+            <!-- Stats Cards Row -->
+            <div class="row mb-4">
+                <!-- Total Cars Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Toplam Araç</div>
+                                    <div class="h5 mb-0 font-weight-bold text-dark">@ViewBag.TotalCars</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="mdi mdi-car text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Cars Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Müsait Araç</div>
+                                    <div class="h5 mb-0 font-weight-bold text-success">@ViewBag.AvailableCars</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-success">
+                                        <i class="mdi mdi-check-circle text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Reservations Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Toplam Rezervasyon</div>
+                                    <div class="h5 mb-0 font-weight-bold text-dark">@ViewBag.TotalReservations</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-info">
+                                        <i class="mdi mdi-calendar-check text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Reservations Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Bekleyen Rezervasyon</div>
+                                    <div class="h5 mb-0 font-weight-bold text-warning">@ViewBag.PendingReservations</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-warning">
+                                        <i class="mdi mdi-clock-outline text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Row -->
+            <div class="row">
+                <!-- Fuel Prices Widget -->
+                <div class="col-xl-6 col-lg-7">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-dark text-white d-flex flex-row align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-gas-pump me-2"></i>
+                                <h6 class="m-0 font-weight-bold">Günlük Yakıt Fiyatları</h6>
+                            </div>
+                            <button class="btn btn-outline-light btn-sm" onclick="refreshFuelPrices()">
+                                <i class="fas fa-sync-alt"></i> Güncelle
+                            </button>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="fuelPricesWidget">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p class="mt-3 text-muted">Yakıt fiyatları yükleniyor...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="col-xl-6 col-lg-5">
+                    <div class="card border-0 shadow-sm mb-4 quick-actions">
+                        <div class="card-header bg-dark text-white">
+                            <div class="d-flex align-items-center">
+                                <h6 class="m-0 font-weight-bold">Hızlı İşlemler</h6>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <a href="/Admin/CarRecommendation" class="btn btn-outline-dark btn-lg mb-3 w-100">
+                                <div class="d-flex align-items-start">
+                                    <div class="action-icon bg-primary text-white me-3">
+                                        <i class="mdi mdi-robot"></i>
+                                    </div>
+                                    <div class="flex-grow-1 text-start">
+                                        <div class="fw-bold">AI Araç Öneri Asistanı</div>
+                                        <small class="text-muted">Yapay zeka destekli öneriler</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/Car/Index" class="btn btn-outline-dark btn-lg mb-3 w-100">
+                                <div class="d-flex align-items-start">
+                                    <div class="action-icon bg-success text-white me-3">
+                                        <i class="mdi mdi-car-multiple"></i>
+                                    </div>
+                                    <div class="flex-grow-1 text-start">
+                                        <div class="fw-bold">Araç Yönetimi</div>
+                                        <small class="text-muted">Araç ekleme, düzenleme ve listeleme</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="/Reservation/Index" class="btn btn-outline-dark btn-lg w-100">
+                                <div class="d-flex align-items-start">
+                                    <div class="action-icon bg-info text-white me-3">
+                                        <i class="mdi mdi-calendar-check"></i>
+                                    </div>
+                                    <div class="flex-grow-1 text-start">
+                                        <div class="fw-bold">Rezervasyon Yönetimi</div>
+                                        <small class="text-muted">Rezervasyonları görüntüle ve yönet</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sayfa yüklendiğinde çalışacak
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+
+        // Sayfa yüklendiğinde yakıt fiyatlarını getir
+        setTimeout(refreshFuelPrices, 500);
+    });
+
+    function updateCurrentTime() {
+        const now = new Date();
+        const timeString = now.toLocaleString('tr-TR', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const timeElement = document.getElementById('currentTime');
+        if (timeElement) {
+            timeElement.innerHTML = `<i class="fas fa-clock me-1"></i>${timeString}`;
+        }
+    }
+
+    async function refreshFuelPrices() {
+        const widget = document.getElementById('fuelPricesWidget');
+
+        try {
+            // Loading göster
+            widget.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-3 text-muted">Yakıt fiyatları güncelleniyor...</p>
+                </div>
+            `;
+
+            const response = await fetch('/Admin/GetFuelPrices');
+            const result = await response.json();
+
+            if (result.success) {
+                const data = result.data;
+
+                widget.innerHTML = `
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <div class="fuel-price-item">
+                                <div class="fuel-icon text-danger">
+                                    <i class="mdi mdi-gas-station"></i>
+                                </div>
+                                <div class="fuel-info">
+                                    <div class="fuel-name">Benzin</div>
+                                    <div class="fuel-price">₺${data.petrol}</div>
+                                    <small class="text-muted">/Litre</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="fuel-price-item">
+                                <div class="fuel-icon text-warning">
+                                    <i class="mdi mdi-truck"></i>
+                                </div>
+                                <div class="fuel-info">
+                                    <div class="fuel-name">Motorin</div>
+                                    <div class="fuel-price">₺${data.diesel}</div>
+                                    <small class="text-muted">/Litre</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="fuel-price-item">
+                                <div class="fuel-icon text-info">
+                                    <i class="mdi mdi-fire"></i>
+                                </div>
+                                <div class="fuel-info">
+                                    <div class="fuel-name">LPG</div>
+                                    <div class="fuel-price">₺${data.lpg}</div>
+                                    <small class="text-muted">/Litre</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            Son güncelleme: ${data.lastUpdate}
+                        </small>
+                    </div>
+                `;
+
+            } else {
+                throw new Error(result.message);
+            }
+
+        } catch (error) {
+            console.error('Fuel prices error:', error);
+            widget.innerHTML = `
+                <div class="alert alert-light border text-center">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    <div>
+                        <strong>Yakıt fiyatları yüklenemedi</strong>
+                        <p class="mb-2 mt-1">API bağlantısı kurulamadı</p>
+                        <button class="btn btn-sm btn-outline-primary" onclick="refreshFuelPrices()">
+                            <i class="fas fa-redo me-1"></i>Tekrar Dene
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+</script>
+
+<style>
+    /* Clean Dashboard Styles */
+    .welcome-section h1 {
+        color: #2c3e50;
+    }
+
+    .current-time {
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Clean Stats Cards */
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .icon-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .icon-circle i {
+            font-size: 1.2rem;
+        }
+
+    /* Action Buttons */
+    .action-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .btn-outline-dark {
+        border: 2px solid #e9ecef;
+        padding: 15px;
+        text-decoration: none;
+        color: #2c3e50;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #2c3e50;
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        /* Fix button content alignment */
+        .btn-outline-dark .d-flex {
+            align-items: flex-start; /* Align to top instead of center */
+        }
+
+        .btn-outline-dark > .d-flex > div:nth-child(2) {
+            flex: 1;
+            text-align: left; /* Ensure text starts from left */
+        }
+
+        .btn-outline-dark .fw-bold {
+            display: block;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .btn-outline-dark small {
+            display: block;
+            line-height: 1.3;
+        }
+
+    /* Simple Fuel Price Cards */
+    .fuel-price-item {
+        text-align: center;
+        padding: 20px 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    .fuel-icon {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .fuel-name {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .fuel-price {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    /* Card Headers */
+    .card-header {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Quick Actions Fix */
+    .quick-actions {
+        display: flex;
+        gap: 15px; /* butonlar arasında boşluk */
+    }
+
+        .quick-actions .action-icon {
+            margin-right: 16px; /* ikon ve yazı arası boşluk */
+        }
+
+</style>

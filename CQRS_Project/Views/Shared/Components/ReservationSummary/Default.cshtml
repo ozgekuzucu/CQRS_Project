@@ -1,0 +1,66 @@
+﻿@model CQRS_Project.ViewComponents.ReservationSummaryViewModel
+<div class="card mt-4">
+    <div class="card-header bg-primary text-white">
+        Rezervasyon Özeti
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Seçilen Araç</h6>
+                <p><strong>@Model.Brand @Model.Model</strong></p>
+                <p>Yakıt Tipi: <strong>@Model.FuelType</strong></p>
+                <p>₺@Model.PricePerDay / gün</p>
+            </div>
+            <div class="col-md-6">
+                <h6>Tarih Bilgileri</h6>
+                <p>Alış: @Model.StartDate.ToShortDateString() @Model.StartTime</p>
+                <p>Bırakış: @Model.EndDate.ToShortDateString() @Model.EndTime</p>
+                <p>@Model.TotalDays gün</p>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Lokasyon</h6>
+                <p>Alış: @Model.PickUpText</p>
+                <p>Bırakış: @Model.DropOffText</p>
+            </div>
+            <div class="col-md-6">
+                <h6>Fiyat Detayı</h6>
+                <p>Günlük Ücret: ₺@Model.PricePerDay</p>
+                <p>Gün Sayısı: @Model.TotalDays</p>
+                <p><strong>Araç Kirası:</strong> ₺@Model.TotalPrice</p>
+            </div>
+        </div>
+        <hr />
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h6>Tahmini Mesafe ve Yakıt</h6>
+                <p><i class="fas fa-route text-info"></i> <strong>Ortalama Mesafe:</strong> @Model.DistanceKm.ToString("F1") km</p>
+                <p><i class="fas fa-gas-pump text-warning"></i> <strong>Tahmini Yakıt:</strong> @Model.EstimatedFuelLiters.ToString("F1") @(Model.FuelType == "Elektrik" ? "kWh" : "litre")</p>
+                <small class="text-muted">(7 lt/100km olarak hesaplanmıştır)</small>
+            </div>
+            <div class="col-md-6">
+                <h6>Maliyet Özeti</h6>
+                <div class="bg-light p-3 rounded">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Araç Kirası:</span>
+                        <span class="font-weight-bold">₺@Model.TotalPrice.ToString("F2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tahmini Yakıt:</span>
+                        <span class="font-weight-bold">₺@Model.EstimatedFuelCost.ToString("F2")</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="d-flex justify-content-between">
+                        <span class="h6 mb-0">TOPLAM MALIYET:</span>
+                        <span class="h5 mb-0 text-success font-weight-bold">₺@((Model.TotalPrice + Model.EstimatedFuelCost).ToString("F2"))</span>
+                    </div>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                    <i class="fas fa-info-circle"></i> Yakıt maliyeti tahminidir, gerçek tüketim değişebilir.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

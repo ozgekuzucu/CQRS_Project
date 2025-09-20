@@ -1,0 +1,81 @@
+﻿@inject CQRS_Project.CQRS.Handlers.ReviewHandlers.GetReviewQueryHandler ReviewHandler
+@inject CQRS_Project.CQRS.Handlers.AboutHandlers.GetAboutByIdQueryHandler AboutHandler
+@inject CQRS_Project.CQRS.Handlers.EmployeeHandlers.GetEmployeeQueryHandler EmployeeHandler
+@{
+    ViewData["Title"] = "Index";
+    Layout = null;
+    var reviewModel = await ReviewHandler.Handle();
+    var employeeModel = await EmployeeHandler.Handle();
+    var aboutModel = await AboutHandler.Handle(new CQRS_Project.CQRS.Queries.AboutQueries.GetAboutByIdQuery(6));
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+@Html.Partial("/Views/Default/PartialHead.cshtml")
+
+<body>
+
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    @Html.Partial("/Views/Default/PartialTopbar.cshtml")
+
+    @Html.Partial("/Views/Default/PartialNavbar.cshtml")
+
+    @await Component.InvokeAsync("DefaultSlider")
+@* 
+    @await Component.InvokeAsync("AvailableCars")
+
+    <div id="reservationSummaryContainer" style="display: none;">
+        @await Component.InvokeAsync("ReservationSummary", new {
+        carId = 0,
+                brand = "",
+                model = "",
+                pricePerDay = 0m, 
+                totalPrice = 0m,  
+                totalDays = 0,
+                pickUpLocationId = 0,
+                dropOffLocationId = 0,
+                startDate = DateTime.Now,
+                endDate = DateTime.Now,
+                pickUpText = "",
+                dropOffText = "",
+                startTime = "",
+                endTime = "",
+                pickUpLat = 0.0,     
+                pickUpLon = 0.0,     
+                dropOffLat = 0.0,   
+                dropOffLon = 0.0     
+                })
+    </div>
+ *@
+    @Html.Partial("/Views/Default/PartialFeatures.cshtml")
+
+    @await Html.PartialAsync("/Views/Default/PartialAbout.cshtml", aboutModel)
+
+    @await Component.InvokeAsync("DefaultStatistics")
+
+    @Html.Partial("/Views/Default/PartialServices.cshtml")
+    1
+    @Html.Partial("/Views/Default/PartialCarProcess.cshtml")
+
+    @Html.Partial("/Views/Default/PartialBanner.cshtml")
+
+    @await Html.PartialAsync("/Views/Default/PartialTeam.cshtml", employeeModel)
+
+    @await Html.PartialAsync("/Views/Default/PartialTestimonial.cshtml", reviewModel)
+
+    @await Component.InvokeAsync("Contact")
+
+    @Html.Partial("/Views/Default/PartialFooter.cshtml")
+
+    @Html.Partial("/Views/Default/PartialScript.cshtml")
+
+</body>
+
+</html>
+

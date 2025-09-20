@@ -1,0 +1,62 @@
+﻿@model CQRS_Project.CQRS.Commands.CustomerCommands.CreateCustomerCommand
+@{
+    ViewData["Title"] = "CreateCustomer";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Müşteri Ekle</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label>Ad Soyad</label>
+                                <input type="text" asp-for="FullName" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" asp-for="Email" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Şifre</label>
+                                <input type="password" asp-for="PasswordHash" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Telefon</label>
+                                <input type="text" asp-for="Phone" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ehliyet No</label>
+                                <input type="text" asp-for="DrivingLicenseNo" class="form-control" />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-rounded btn-sm">Kaydet</button>
+                            <a href="/Customer/Index" class="btn btn-light btn-rounded btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>

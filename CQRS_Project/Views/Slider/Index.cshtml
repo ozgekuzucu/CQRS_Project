@@ -1,0 +1,132 @@
+﻿@model List<CQRS_Project.CQRS.Results.SliderResults.GetSliderQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Slider Listesi</h4>
+                            <a href="/Slider/CreateSlider" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="12%">Resim</th>
+                                        <th width="50%">İçerik</th>
+                                        <th width="18%" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td><span class="badge bg-secondary"> @count</span></td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                {
+                                                    <img src="@item.ImageUrl" alt="@item.Title" style="width:80px; height:auto" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="slider-placeholder">
+                                                        <i class="mdi mdi-image text-muted"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="slider-content">
+                                                    <div class="fw-medium mb-2">
+                                                        @item.Title
+                                                    </div>
+                                                    <div class="slider-description">
+                                                        @if (item.Description.Length > 150)
+                                                        {
+                                                            <span title="@item.Description">@item.Description.Substring(0, 150)...</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            @item.Description
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="/Slider/UpdateSlider/@item.SliderId"
+                                                   class="btn btn-outline-success btn-sm me-2"
+                                                   title="Düzenle">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="/Slider/DeleteSlider/@item.SliderId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Sil"
+                                                   onclick="return confirm('Bu slider\'ı silmek istediğinizden emin misiniz?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    .slider-placeholder {
+        width: 100px;
+        height: 60px;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .slider-content {
+        line-height: 1.4;
+    }
+
+    .slider-description {
+        font-size: 0.9rem;
+        color: #6c757d;
+        line-height: 1.4;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    }
+</style>

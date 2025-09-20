@@ -1,0 +1,46 @@
+﻿@model CQRS_Project.CQRS.Commands.ReviewCommands.CreateReviewCommand
+@{
+    ViewData["Title"] = "CreateReview";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Yorum Oluştur</h4>
+                        <form method="post">
+                            <div class="form-group">
+                                <label>Müşteri</label>
+                                <select asp-for="CustomerId" asp-items="ViewBag.Customers" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Araç</label>
+                                <select asp-for="CarId" asp-items="ViewBag.Cars" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Yorum</label>
+                                <textarea asp-for="Comment" class="form-control"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Puan</label>
+                                <input type="number" asp-for="Rating" class="form-control" min="1" max="5" />
+                            </div>
+
+                            <br />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                            <a href="/Review/Index" class="btn btn-outline-light btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

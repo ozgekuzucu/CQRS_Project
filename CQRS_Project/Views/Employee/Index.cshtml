@@ -1,0 +1,163 @@
+﻿@model List<CQRS_Project.CQRS.Results.EmployeeResults.GetEmployeeQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Çalışan Listesi</h4>
+                            <a href="/Employee/CreateEmployee" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="8%">Fotoğraf</th>
+                                        <th width="25%">Çalışan Bilgisi</th>
+                                        <th width="17%" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td><span class="badge bg-secondary"> @count</span></td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                {
+                                                    <img src="@item.ImageUrl" style="height:100px; width:auto" alt="@item.EmployeeName" class="employee-photo" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="employee-placeholder">
+                                                        <i class="mdi mdi-account text-muted"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="fw-medium">@item.EmployeeName</div>
+                                                <small class="text-muted">@item.Title</small>
+                                            </td>
+                                   @*          <td>
+                                                <div class="social-links">
+                                                    @if (!string.IsNullOrEmpty(item.SocialMedia1))
+                                                    {
+                                                        <span class="social-item">
+                                                            <i class="mdi mdi-facebook text-primary"></i>
+                                                            <small>@item.SocialMedia1</small>
+                                                        </span>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(item.SocialMedia2))
+                                                    {
+                                                        <span class="social-item">
+                                                            <i class="mdi mdi-twitter text-info"></i>
+                                                            <small>@item.SocialMedia2</small>
+                                                        </span>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(item.SocialMedia3))
+                                                    {
+                                                        <span class="social-item">
+                                                            <i class="mdi mdi-instagram text-danger"></i>
+                                                            <small>@item.SocialMedia3</small>
+                                                        </span>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(item.SocialMedia4))
+                                                    {
+                                                        <span class="social-item">
+                                                            <i class="mdi mdi-linkedin text-primary"></i>
+                                                            <small>@item.SocialMedia4</small>
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </td> *@
+                                            <td class="text-center">
+                                                <a href="/Employee/UpdateEmployee/@item.EmployeeId"
+                                                   class="btn btn-outline-success btn-sm me-2"
+                                                   title="Düzenle">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="/Employee/DeleteEmployee/@item.EmployeeId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Sil"
+                                                   onclick="return confirm('Bu çalışanı silmek istediğinizden emin misiniz?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com</span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    
+    .employee-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .social-links {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .social-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8rem;
+    }
+
+        .social-item i {
+            font-size: 1rem;
+            width: 16px;
+        }
+
+        .social-item small {
+            color: #6c757d;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+</style>

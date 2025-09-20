@@ -1,0 +1,22 @@
+﻿namespace CQRS_Project.CQRS.Results.CarResults
+{
+	public class GetAvailableCarsQueryResult
+	{
+		public int CarId { get; set; }
+		public string Brand { get; set; }
+		public string Model { get; set; }
+		public string Category { get; set; }
+		public decimal PricePerDay { get; set; }
+		public string ImageUrl { get; set; }
+		public bool IsAvailable { get; set; }
+		public string Transmission { get; set; }
+		public string FuelType { get; set; }	
+		public int Stars { get; set; }
+		public int SeatCount { get; set; }
+		public string ModelYear { get; set; }
+		public int BrandId { get; set; }
+		public int CategoryId { get; set; }
+		
+
+	}
+}

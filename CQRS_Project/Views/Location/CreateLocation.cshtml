@@ -1,0 +1,232 @@
+﻿@model CQRS_Project.CQRS.Commands.LocationCommands.CreateLocationCommand
+@{
+    ViewData["Title"] = "CreateLocation";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <div class="card border-0 shadow-sm">
+                        <!-- Card Header -->
+                        <div class="card-header bg-dark text-white d-flex flex-row align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-map-marker-plus me-2"></i>
+                                <h6 class="m-0 font-weight-bold">Yeni Lokasyon Ekle</h6>
+                            </div>
+                            <a href="/Location/Index" class="btn btn-outline-light btn-sm">
+                                <i class="mdi mdi-arrow-left me-1"></i>Geri Dön
+                            </a>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <form method="post" class="needs-validation" novalidate>
+
+                                <!-- Şehir ve İlçe - Yan Yana -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">
+                                            <i class="mdi mdi-city text-primary me-1"></i>Şehir
+                                        </label>
+                                        <input type="text" asp-for="City" class="form-control" placeholder="Şehir adını girin" required />
+                                        <div class="invalid-feedback">
+                                            Lütfen şehir adını girin.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">
+                                            <i class="mdi mdi-map-marker text-info me-1"></i>İlçe
+                                        </label>
+                                        <input type="text" asp-for="District" class="form-control" placeholder="İlçe adını girin" required />
+                                        <div class="invalid-feedback">
+                                            Lütfen ilçe adını girin.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Adres -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-medium">
+                                        <i class="mdi mdi-map-marker-outline text-success me-1"></i>Adres
+                                    </label>
+                                    <textarea asp-for="Address" class="form-control" rows="3" placeholder="Detaylı adres bilgisini girin" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Lütfen adres bilgisini girin.
+                                    </div>
+                                </div>
+
+                                <!-- Durum -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium">
+                                        Durum
+                                    </label>
+                                    <select asp-for="IsActive" class="form-select">
+                                        <option value="true" selected>
+                                            <i class="mdi mdi-check-circle"></i> Aktif
+                                        </option>
+                                        <option value="false">
+                                            <i class="mdi mdi-close-circle"></i> Pasif
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Koordinat Bilgisi -->
+                                <div class="alert alert-light border">
+                                    <div class="d-flex align-items-start">
+                                        <i class="mdi mdi-information text-info me-2 mt-1"></i>
+                                        <div>
+                                            <h6 class="alert-heading mb-1">Koordinat Bilgisi</h6>
+                                            <p class="mb-2">Koordinat bilgileri adres bilgisine göre otomatik olarak hesaplanacaktır.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Buttons -->
+                                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-outline-primary">
+                                           Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Bootstrap form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    // Auto-capitalize city and district inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const cityInput = document.querySelector('[asp-for="City"]');
+        const districtInput = document.querySelector('[asp-for="District"]');
+
+        if (cityInput) {
+            cityInput.addEventListener('input', function() {
+                this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();
+            });
+        }
+
+        if (districtInput) {
+            districtInput.addEventListener('input', function() {
+                this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1).toLowerCase();
+            });
+        }
+    });
+
+    // Reset form with confirmation
+    document.querySelector('button[type="reset"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Formu temizlemek istediğinizden emin misiniz?')) {
+            document.querySelector('form').reset();
+            document.querySelector('form').classList.remove('was-validated');
+        }
+    });
+</script>
+
+<style>
+    /* Form Styling */
+    .form-label {
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 10px 14px;
+        transition: all 0.2s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control.is-valid, .form-select.is-valid {
+            border-color: #28a745;
+        }
+
+    /* Card Hover Effect */
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    /* Button Styling */
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #0056b3, #004085);
+        }
+
+    /* Alert Styling */
+    .alert {
+        border-radius: 10px;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .alert-light {
+        background-color: #f8f9fa;
+        border-color: #e9ecef;
+    }
+
+    /* Validation Styling */
+    .invalid-feedback {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .form-text {
+        margin-top: 5px;
+    }
+
+    /* Icon Spacing */
+    .form-label i {
+        font-size: 1rem;
+    }
+</style>

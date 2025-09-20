@@ -1,0 +1,101 @@
+﻿@model List<CQRS_Project.CQRS.Results.AboutResults.GetAboutQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Hakkımızda Listesi</h4>
+                            <a href="/About/CreateAbout/" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                            </a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="15%">Başlık</th>
+                                        <th width="25%">Açıklama</th>
+                                        <th width="15%">Alt Açıklama</th>
+                                        <th width="15%" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td><span class="badge bg-secondary">@count</span></td>
+                                            <td class="fw-medium">@item.Title</td>
+                                            <td>@(item.Description?.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description)</td>
+                                            <td>@(item.SubDescription?.Length > 40 ? item.SubDescription.Substring(0, 40) + "..." : item.SubDescription)</td>
+                                            <td class="text-center">
+                                                <a href="/About/UpdateAbout/@item.AboutId"
+                                                   class="btn btn-outline-success btn-sm me-2"
+                                                   title="Düzenle">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="/About/DeleteAbout/@item.AboutId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Sil"
+                                                   onclick="return confirm('Bu kaydı silmek istediğinizden emin misiniz?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com</span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    .table td {
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    .small {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+        .small > div {
+            margin-bottom: 2px;
+        }
+
+        .small i {
+            font-size: 0.75rem;
+            width: 12px;
+        }
+
+    img:hover {
+        transform: scale(2);
+        z-index: 1000;
+        position: relative;
+    }
+</style>

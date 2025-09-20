@@ -1,0 +1,132 @@
+﻿@model List<CQRS_Project.CQRS.Results.CarResults.GetCarQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Araç Listesi</h4>
+                            <a href="/Car/CreateCar/" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th>Resim</th>
+                                        <th width="15%">Araç Bilgisi</th>
+                                        <th width="12%">Fiyat</th>
+                                        <th width="8%">Durum</th>
+                                        <th width="15%">Özellikler</th>
+                                        <th width="12%">Detaylar</th>
+                                        <th width="15%" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td><span class="badge bg-secondary"> @count</span></td>
+                                            <td>
+                                                <img src="@item.ImageUrl" alt="@item.Model" style="height:100px; width:auto" class="car-thumbnail" />
+                                            </td>
+                                            <td>
+                                                <div class="fw-medium">@item.Model</div>
+                                                <small class="text-muted">@item.BrandName</small>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-success">@item.PricePerDay ₺</span>
+                                                <small class="d-block text-muted">/gün</small>
+                                            </td>
+                                            <td>
+                                                @if (item.IsAvailable)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="mdi mdi-check-circle me-1"></i>Müsait
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="mdi mdi-close-circle me-1"></i>Dolu
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div><i class="mdi mdi-gas-station text-warning me-1"></i> @item.FuelType</div>
+                                                    <div><i class="mdi mdi-sync text-info me-1"></i> @item.Transmission</div>
+                                                    <div><i class="mdi mdi-account-group text-primary me-1"></i> @item.SeatCount kişi</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div><strong>Kategori:</strong> @item.CategoryName</div>
+                                                    <div><strong>Model Yılı:</strong> @item.ModelYear</div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="/Car/UpdateCar/@item.CarId"
+                                                   class="btn btn-outline-success btn-sm me-2"
+                                                   title="Düzenle">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="/Car/DeleteCar/@item.CarId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Sil"
+                                                   onclick="return confirm('Bu aracı silmek istediğinizden emin misiniz?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+        .badge i {
+            font-size: 0.7rem;
+        }
+
+    .small {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+        .small > div {
+            margin-bottom: 2px;
+        }
+
+        .small i {
+            font-size: 0.75rem;
+            width: 12px;
+        }
+
+</style>

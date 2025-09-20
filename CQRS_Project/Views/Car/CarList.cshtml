@@ -1,0 +1,104 @@
+﻿@model List<CQRS_Project.CQRS.Results.CarResults.GetCarQueryResult>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+@Html.Partial("/Views/Default/PartialHead.cshtml")
+
+<body>
+
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    @Html.Partial("/Views/Default/PartialTopbar.cshtml")
+
+    @Html.Partial("/Views/Default/PartialNavbar.cshtml")
+
+    <div class="container-fluid categories py-5">
+        <div class="container py-5">
+            <div class="text-center mx-auto pb-3 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 700px;">
+                <h3 class="mb-2">Araç Seçeneklerimiz</h3>
+                <p class="mb-0 text-muted" style="font-size: 15px;">
+                    Geniş araç filomuzdan dilediğinizi seçin.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                @* Artık carousel yok, grid yapısı *@
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        @* 3 sütunlu grid *@
+                        <div class="categories-item p-4 shadow rounded h-100">
+                            <div class="categories-item-inner">
+                                <div class="categories-img rounded-top">
+                                    <img src="@item.ImageUrl" class="img-fluid w-100 rounded-top" alt="">
+                                </div>
+                                <div class="categories-content rounded-bottom p-4">
+                                    <h4>@item.BrandName @item.Model</h4>
+                                   <div class="categories-review mb-3">
+                                        <div class="d-flex justify-content-center text-warning">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= item.Stars)
+                                                {
+                                                    <i class="fas fa-star"></i>   <!-- Dolu yıldız -->
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star"></i>   <!-- Boş yıldız -->
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <h5 class="bg-white text-primary rounded-pill py-2 px-4 mb-0">
+                                            @item.PricePerDay ₺ / Günlük
+                                        </h5>
+                                    </div>
+                                    <div class="row gy-2 gx-0 text-center mb-3">
+                                        <div class="col-6 border-end">
+                                            <i class="fa fa-users text-dark"></i>
+                                            <span class="text-body ms-1">@item.SeatCount Kişilik</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <i class="fa fa-gas-pump text-dark"></i>
+                                            <span class="text-body ms-1">@item.FuelType</span>
+                                        </div>
+                                        <div class="col-6 border-end">
+                                            <i class="fa fa-car text-dark"></i>
+                                            <span class="text-body ms-1">@item.Model</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <i class="fa fa-cogs text-dark"></i>
+                                            <span class="text-body ms-1">@item.Transmission</span>
+                                        </div>
+                                    </div>
+                                  <a href="/Reservation/BookNow?carId=@item.CarId" class="btn btn-primary rounded-pill w-100 py-2">
+                                    Bu Aracı Seç
+                                  </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    @Html.Partial("/Views/Default/PartialFooter.cshtml")
+
+    @Html.Partial("/Views/Default/PartialScript.cshtml")
+</body>
+
+</html>
+

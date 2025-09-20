@@ -1,0 +1,58 @@
+﻿@model CQRS_Project.CQRS.Results.LocationResults.GetLocationByIdQueryResult
+@{
+    ViewData["Title"] = "UpdateLocation";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Lokasyon Güncelle</h4>
+                        <form class="forms-sample" method="post">
+                            <input type="hidden" asp-for="LocationId" />
+                            <div class="form-group">
+                                <label>Şehir</label>
+                                <input type="text" asp-for="City" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>İlçe</label>
+                                <input type="text" asp-for="District" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Adres</label>
+                                <input type="text" asp-for="Address" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Durum</label>
+                                <select asp-for="IsActive" class="form-control">
+                                    <option value="true">Aktif</option>
+                                    <option value="false">Pasif</option>
+                                </select>
+                            </div>
+                            <br />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                            <a href="/Location/Index" class="btn btn-outline-light btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content-wrapper ends -->
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>
+

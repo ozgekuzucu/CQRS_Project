@@ -1,0 +1,503 @@
+﻿@model List<CQRS_Project.CQRS.Results.LocationResults.GetLocationQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="container-fluid">
+
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show border-0" role="alert">
+                    <i class="mdi mdi-check-circle me-2"></i>
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show border-0" role="alert">
+                    <i class="mdi mdi-alert-circle me-2"></i>
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Statistics Cards Row -->
+            <div class="row mb-4">
+                <!-- Total Locations Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Toplam Lokasyon</div>
+                                    <div class="h5 mb-0 font-weight-bold text-dark">@Model.Count</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="mdi mdi-map-marker-multiple text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Locations Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Aktif Lokasyon</div>
+                                    <div class="h5 mb-0 font-weight-bold text-success">@Model.Count(x => x.IsActive)</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-success">
+                                        <i class="mdi mdi-check-circle text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cities Count Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Şehir Sayısı</div>
+                                    <div class="h5 mb-0 font-weight-bold text-info">@Model.Select(x => x.City).Distinct().Count()</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-info">
+                                        <i class="mdi mdi-city text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inactive Locations Card -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Pasif Lokasyon</div>
+                                    <div class="h5 mb-0 font-weight-bold text-warning">@Model.Count(x => !x.IsActive)</div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon-circle bg-warning">
+                                        <i class="mdi mdi-close-circle text-white"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card border-0 shadow-sm">
+                        <!-- Card Header with Actions -->
+                        <div class="card-header bg-dark text-white d-flex flex-row align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="mdi mdi-map-marker me-2"></i>
+                                <h6 class="m-0 font-weight-bold">Lokasyon Yönetimi</h6>
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="toggleSearch()" style="margin-right: 15px;">
+                                    <i class="mdi mdi-magnify me-1"></i>Ara
+                                </button>
+                                <a href="/Location/CreateLocation" class="btn btn-light btn-sm">
+                                    <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <!-- Search Box (Hidden by default) -->
+                            <div id="searchBox" class="mb-3" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="searchInput"
+                                                   placeholder="Şehir, ilçe veya adres ara...">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">
+                                                <i class="mdi mdi-close"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="mb-4">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <a href="/Location/AddFromApi" class="btn btn-outline-dark btn-lg w-100">
+                                            <div class="d-flex align-items-start">
+                                                <div class="action-icon bg-info text-white me-3">
+                                                    <i class="mdi mdi-cloud-download"></i>
+                                                </div>
+                                                <div class="flex-grow-1 text-start">
+                                                    <div class="fw-bold">API'den Ekle</div>
+                                                    <small class="text-muted">Harici API'den lokasyon al</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-outline-dark btn-lg w-100" onclick="syncCities()">
+                                            <div class="d-flex align-items-start">
+                                                <div class="action-icon bg-warning text-white me-3">
+                                                    <i class="mdi mdi-sync"></i>
+                                                </div>
+                                                <div class="flex-grow-1 text-start">
+                                                    <div class="fw-bold">Senkronize Et</div>
+                                                    <small class="text-muted">Şehirleri güncelle</small>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-outline-dark btn-lg w-100" onclick="showMapView()">
+                                            <div class="d-flex align-items-start">
+                                                <div class="action-icon bg-success text-white me-3">
+                                                    <i class="mdi mdi-map"></i>
+                                                </div>
+                                                <div class="flex-grow-1 text-start">
+                                                    <div class="fw-bold">Harita Görünümü</div>
+                                                    <small class="text-muted">Lokasyonları haritada gör</small>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Locations Table -->
+                            @if (Model.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-striped" id="locationsTable">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th width="5%">#</th>
+                                                <th width="15%">Şehir</th>
+                                                <th width="15%">İlçe</th>
+                                                <th width="30%">Adres</th>
+                                                <th width="15%">Koordinatlar</th>
+                                                <th width="8%">Durum</th>
+                                                <th width="12%" class="text-center">İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                count++;
+                                                <tr>
+                                                    <td><span class="badge bg-secondary">@count</span></td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="fw-medium">@item.City</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="fw-medium">@item.District</div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-muted small">@(item.Address?.Length > 50 ? item.Address.Substring(0, 50) + "..." : item.Address)</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small text-info">
+                                                            <i class="mdi mdi-crosshairs-gps me-1"></i>
+                                                            <div>@item.Latitude.ToString("F4")</div>
+                                                            <div>@item.Longitude.ToString("F4")</div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @if (item.IsActive)
+                                                        {
+                                                            <span class="badge bg-success">
+                                                                <i class="mdi mdi-check-circle me-1"></i>Aktif
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-secondary">
+                                                                <i class="mdi mdi-close-circle me-1"></i>Pasif
+                                                            </span>
+                                                        }
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="/Location/UpdateLocation/@item.LocationId"
+                                                           class="btn btn-outline-success btn-sm me-1"
+                                                           title="Düzenle">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </a>
+                                                        <a href="/Location/DeleteLocation/@item.LocationId"
+                                                           class="btn btn-outline-danger btn-sm"
+                                                           onclick="return confirm('Bu lokasyonu silmek istediğinizden emin misiniz?')"
+                                                           title="Sil">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-5">
+                                    <i class="mdi mdi-map-marker-off display-1 text-muted"></i>
+                                    <h5 class="text-muted mt-3">Henüz lokasyon bulunmuyor</h5>
+                                    <p class="text-muted">İlk lokasyonunuzu eklemek için yukarıdaki butonları kullanın</p>
+                                    <a href="/Location/CreateLocation" class="btn btn-primary mt-2">
+                                        <i class="mdi mdi-plus me-1"></i>İlk Lokasyonu Ekle
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form for sync cities -->
+<form id="syncForm" asp-action="SyncCities" method="post" style="display: none;"></form>
+
+
+<script>
+    // Search functionality
+    function toggleSearch() {
+        const searchBox = document.getElementById('searchBox');
+        if (searchBox.style.display === 'none') {
+            searchBox.style.display = 'block';
+            document.getElementById('searchInput').focus();
+        } else {
+            searchBox.style.display = 'none';
+            clearSearch();
+        }
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        filterTable('');
+    }
+
+    // Real-time search
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                filterTable(this.value.toLowerCase());
+            });
+        }
+    });
+
+    function filterTable(searchTerm) {
+        const table = document.getElementById('locationsTable');
+        if (!table) return;
+
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const city = row.cells[1].textContent.toLowerCase();
+            const district = row.cells[2].textContent.toLowerCase();
+            const address = row.cells[3].textContent.toLowerCase();
+
+            if (city.includes(searchTerm) || district.includes(searchTerm) || address.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    // Sync cities function
+    function syncCities() {
+        if (confirm('Türk şehirlerini senkronize etmek istediğinizden emin misiniz? Bu işlem birkaç dakika sürebilir.')) {
+            // Show loading
+            const button = event.target.closest('button');
+            const originalHtml = button.innerHTML;
+
+            button.innerHTML = `
+                <div class="d-flex align-items-start">
+                    <div class="action-icon bg-warning text-white me-3">
+                        <i class="mdi mdi-loading mdi-spin"></i>
+                    </div>
+                    <div class="flex-grow-1 text-start">
+                        <div class="fw-bold">Senkronize Ediliyor...</div>
+                        <small class="text-muted">Lütfen bekleyin</small>
+                    </div>
+                </div>
+            `;
+            button.disabled = true;
+
+            // Submit form
+            setTimeout(() => {
+                document.getElementById('syncForm').submit();
+            }, 1000);
+        }
+    }
+
+    // Auto dismiss alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                if (alert.classList.contains('show')) {
+                    alert.classList.remove('show');
+                    alert.classList.add('fade');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            });
+        }, 5000);
+    });
+</script>
+
+<style>
+    /* Stats Cards Hover Effect */
+    .card {
+        transition: transform 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    /* Icon Circles */
+    .icon-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .icon-circle i {
+            font-size: 1.2rem;
+        }
+
+    /* Action Buttons */
+    .action-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .btn-outline-dark {
+        border: 2px solid #e9ecef;
+        padding: 15px;
+        text-decoration: none;
+        color: #2c3e50;
+        transition: all 0.2s ease;
+    }
+
+        .btn-outline-dark:hover {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #2c3e50;
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .btn-outline-dark .d-flex {
+            align-items: flex-start;
+        }
+
+        .btn-outline-dark .fw-bold {
+            display: block;
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .btn-outline-dark small {
+            display: block;
+            line-height: 1.3;
+        }
+
+    /* Table Styling */
+    .table td {
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+        .badge i {
+            font-size: 0.7rem;
+        }
+
+    .small {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+        .small > div {
+            margin-bottom: 2px;
+        }
+
+        .small i {
+            font-size: 0.75rem;
+            width: 12px;
+        }
+
+    /* Alert Styling */
+    .alert {
+        border-radius: 8px;
+        border-left: 4px solid;
+    }
+
+    .alert-success {
+        border-left-color: #28a745;
+    }
+
+    .alert-danger {
+        border-left-color: #dc3545;
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border-radius: 12px;
+    }
+
+    .modal-header {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    /* Empty State */
+    .display-1 {
+        font-size: 4rem;
+    }
+
+    /* Search Box */
+    .input-group .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+</style>

@@ -1,0 +1,68 @@
+﻿@model CQRS_Project.CQRS.Commands.EmployeeCommands.CreateEmployeeCommand
+@{
+    ViewData["Title"] = "CreateEmployee";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Çalışan Ekle</h4>
+                        <form class="forms-sample" method="post">
+                            <div class="form-group">
+                                <label>Ad Soyad</label>
+                                <input type="text" asp-for="EmployeeName" class="form-control" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Unvan</label>
+                                <input type="text" asp-for="Title" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Resim URL</label>
+                                <input type="text" asp-for="ImageUrl" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Social Media 1</label>
+                                <input type="text" asp-for="SocialMedia1" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Social Media 2</label>
+                                <input type="text" asp-for="SocialMedia2" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Social Media 3</label>
+                                <input type="text" asp-for="SocialMedia3" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Social Media 4</label>
+                                <input type="text" asp-for="SocialMedia4" class="form-control" />
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Kaydet</button>
+                            <a href="/Employee/Index" class="btn btn-outline-light btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block d-sm-inline-block text-center text-sm-left">Copyright © bootstrapdash.com 2020</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com</span>
+            </div>
+        </div>
+    </footer>
+</div>
+

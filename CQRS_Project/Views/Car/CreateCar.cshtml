@@ -1,0 +1,77 @@
+﻿@model CQRS_Project.CQRS.Commands.CarCommands.CreateCarCommand
+@{
+    ViewData["Title"] = "CreateCar";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Yeni Araç Ekle</h4>
+
+                        <form method="post" asp-action="CreateCar" asp-controller="Car">
+                            <div class="form-group">
+                                <label>Model</label>
+                                <input type="text" class="form-control" asp-for="Model" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Resim Url</label>
+                                <input type="text" class="form-control" asp-for="ImageUrl" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Günlük Fiyat (₺)</label>
+                                <input type="number" class="form-control" asp-for="PricePerDay" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Durum</label>
+                                <select class="form-control" asp-for="IsAvailable">
+                                    <option value="true">Müsait</option>
+                                    <option value="false">Dolu</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Marka</label>
+                                <select asp-for="BrandId" asp-items="ViewBag.Brands" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Yakıt Türü</label>
+                                <select asp-for="FuelType" asp-items="ViewBag.FuelTypes" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Vites</label>
+                                <select asp-for="Transmission" asp-items="ViewBag.TransmissionTypes" class="form-control"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Model Yılı</label>
+                                <input type="number" class="form-control" asp-for="ModelYear"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Koltuk Sayısı</label>
+                                <input type="number" class="form-control" asp-for="SeatCount"/>
+                            </div>
+                            <br />
+                            <button type="submit" class="btn btn-outline-primary">Kaydet</button>
+                            <a href="/Car/Index" class="btn btn-outline-light">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

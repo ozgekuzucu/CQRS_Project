@@ -1,0 +1,138 @@
+﻿@model List<CQRS_Project.CQRS.Results.ReviewResults.GetReviewQueryResult>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+    int count = 0;
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title">Yorum Listesi</h4>
+                            <a href="/Review/CreateReview" class="btn btn-outline-primary btn-sm">
+                                <i class="mdi mdi-plus me-1"></i>Yeni Ekle
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="8%">#</th>
+                                        <th width="20%">Müşteri</th>
+                                        <th width="40%">Yorum</th>
+                                        <th width="12%">Değerlendirme</th>
+                                        <th width="20%" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        count++;
+                                        <tr>
+                                            <td><span class="badge bg-secondary"> @count</span></td>
+                                            <td>
+                                                <div class="review-info">
+                                                    @item.CustomerName
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="comment-text">
+                                                    @if (item.Comment.Length > 100)
+                                                    {
+                                                        <span title="@item.Comment">@item.Comment.Substring(0, 100)...</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        @item.Comment
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="rating-display">
+                                                    <div class="stars">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= item.Rating)
+                                                            {
+                                                                <i class="mdi mdi-star text-warning"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="mdi mdi-star-outline text-muted"></i>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <small class="text-muted">@item.Rating/5</small>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="/Review/UpdateReview/@item.ReviewId"
+                                                   class="btn btn-outline-success btn-sm me-2"
+                                                   title="Düzenle">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </a>
+                                                <a href="/Review/DeleteReview/@item.ReviewId"
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   title="Sil"
+                                                   onclick="return confirm('Bu yorumu silmek istediğinizden emin misiniz?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner-wraper">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+                    Copyright © bootstrapdash.com 2020
+                </span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                    Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a> from Bootstrapdash.com
+                </span>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<style>
+    .review-info {
+        line-height: 1.4;
+    }
+
+    .comment-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #495057;
+    }
+
+    .rating-display {
+        text-align: center;
+    }
+
+    .stars {
+        font-size: 1rem;
+        margin-bottom: 2px;
+    }
+
+        .stars i {
+            margin-right: 1px;
+        }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

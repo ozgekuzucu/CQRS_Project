@@ -1,0 +1,65 @@
+﻿@model CQRS_Project.CQRS.Results.ContactResults.GetContactByIdQueryResult
+
+@{
+    ViewData["Title"] = "UpdateContact";
+    Layout = "~/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Contact Güncelle</h4>
+                        <form method="post">
+                            <input type="hidden" asp-for="ContactId" />
+
+                            <div class="form-group">
+                                <label>Adı</label>
+                                <input type="text" asp-for="Name" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" asp-for="Email" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Telefon</label>
+                                <input type="text" asp-for="Phone" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Konu</label>
+                                <input type="text" asp-for="Subject" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mesaj</label>
+                                <textarea asp-for="Message" class="form-control"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cevaplandı mı?</label>
+                                <select asp-for="IsReplied" class="form-control">
+                                    <option value="true">Evet</option>
+                                    <option value="false">Hayır</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cevap Mesajı</label>
+                                <textarea asp-for="ReplyMessage" class="form-control"></textarea>
+                            </div>
+
+                            <br />
+                            <button type="submit" class="btn btn-primary btn-rounded btn-sm">Kaydet</button>
+                            <a href="/Contact/Index" class="btn btn-light btn-rounded btn-sm">İptal</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
