@@ -36,7 +36,7 @@ Proje kapsamında birden fazla servis entegre edilmiştir. Her bir API, farklı 
   - **Notlar:** Mesajın dilini tespit eder, kısa ve öz yanıt üretir, admin bildirimi de mail üzerinden iletilir.
     
 - **🚗 Araç Önerisi (Gemini AI)**
--**Amaç:** Kullanıcının araç kiralama isteğine göre en uygun araçları önerir.
+  - **Amaç:** Kullanıcının araç kiralama isteğine göre en uygun araçları önerir.
 
 ### 👤 Kullanıcı Arayüzü (UI)
 - Seçilen tarih aralığına göre **müsait araçların listelenmesi**  
@@ -79,12 +79,14 @@ Proje kapsamında birden fazla servis entegre edilmiştir. Her bir API, farklı 
 ---
 
 ## 🧩 Kullanılan Teknolojiler
-- **ASP.NET Core 9.0**
-- **CQRS Pattern**  
-- **Entity Framework Core** → ORM  
-- **MS SQL Server** → Veritabanı  
-- **RapidAPI** → Lokasyon, mesafe ve yakıt fiyatı servisleri  
-- **Hugging Face API** → AI tabanlı yanıt ve araç önerileri  
-- **MailKit** → Kullanıcı mesajlarına otomatik mail cevabı  
-- **Bootstrap 5 + Cental Template** → Responsive UI  
+
+| Teknoloji              | Açıklama                                  |
+|-------------------------|-------------------------------------------|
+| **ASP.NET Core 9.0**    | Web uygulama geliştirme çatısı            |
+| **CQRS Pattern**        | Command & Query Responsibility Separation |
+| **Entity Framework Core** | ORM (Object Relational Mapper)           |
+| **MS SQL Server**       | Veritabanı yönetim sistemi                |
+| **RapidAPI**            | Lokasyon, mesafe ve yakıt fiyatı servisleri |
+| **Bootstrap 5 + Cental Template** | Responsive UI tasarımı         |
+
 
