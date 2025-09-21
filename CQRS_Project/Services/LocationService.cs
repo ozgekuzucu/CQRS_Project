@@ -10,7 +10,7 @@ namespace CQRS_Project.Services
 		public LocationService(HttpClient httpClient)
 		{
 			_httpClient = httpClient;
-			_httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "bc82ff89damshf10474353619a4ap1371c5jsna9499c3ae965");
+			_httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "");
 			_httpClient.DefaultRequestHeaders.Add("x-rapidapi-host", "google-map-places.p.rapidapi.com");
 		}
 
